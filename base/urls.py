@@ -9,7 +9,10 @@ urlpatterns = [
     path('hello', views.hello),
     path('pri_test', views.only_mem),
     path('test', views.test),
-    path('login',TokenObtainPairView.as_view() ), # routh login
+    path('buy', views.buy),
+    path('my_orders', views.my_orders),
+    # path('login',TokenObtainPairView.as_view() ), # routh login
+    path('login',views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('register', views.register_user),#Register
      
 ]
