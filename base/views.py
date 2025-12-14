@@ -15,8 +15,78 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
-
 from .models import Order, OrderItem, Product
+# views.py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Product, Category
+from .serializers import ProductSerializer
+
+class ProductCreateAPIView(APIView):
+    def post(self, request):
+        serializer = ProductSerializer(data=request.data)
+        if serializer.is_valid():
+            product = serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class ProductCreateAPIView(APIView):
+    def post(self, request):
+        # Get fields from multipart/form-data
+        desc = request.data.get('desc')
+        price = request.data.get('price')
+        category_id = request.data.get('category')
+        image = request.FILES.get('image')  # image file
+
+        # Validate required fields
+        if desc is None or price is None:
+            return Response(
+                {"error": "desc and price are required fields."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Handle category
+        category = None
+        if category_id:
+            try:
+                category = Category.objects.get(id=category_id)
+            except Category.DoesNotExist:
+                return Response(
+                    {"error": "Category not found."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        # Create product
+        product = Product.objects.create(
+            desc=desc,
+            price=price,
+            category=category,
+            image=image
+        )
+
+        return Response(
+            {
+                "id": product.id,
+                "desc": product.desc,
+                "price": str(product.price),
+                "category": product.category.id if product.category else None,
+                "image": product.image.url if product.image else None,
+                "createdTime": product.createdTime
+            },
+            status=status.HTTP_201_CREATED
+        )
+
+
+
+
+
+
+
+
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -44,10 +114,6 @@ def my_orders(request):
         })
 
     return Response(data)
-
-
-
-
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated]) # token required
@@ -144,10 +210,6 @@ def hello(req):
 @api_view(['GET'])
 def test(req):
     return Response({'user_name':'waga'})
-
-
-
-
 
 @api_view(['POST'])
 def register_user(request):

@@ -1,21 +1,55 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <title>Create Product</title>
+</head>
 <body>
-  <h3>Axios Test</h3>
-  <button onclick="callApi()">Call API</button>
-  <pre id="output"></pre>
+    <h1>Create a New Product</h1>
+    <form id="productForm" enctype="multipart/form-data">
+        <label for="desc">Description:</label>
+        <input type="text" id="desc" name="desc" required><br><br>
 
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script>
-    function callApi() {
-      axios.get('http://127.0.0.1:8000/test')
-        .then(res => {
-          document.getElementById('output').textContent = JSON.stringify(res.data, null, 2);
-        })
-        .catch(err => {
-          document.getElementById('output').textContent = 'Error: ' + err;
+        <label for="price">Price:</label>
+        <input type="number" step="0.01" id="price" name="price" required><br><br>
+
+        <label for="category">Category ID:</label>
+        <input type="number" id="category" name="category"><br><br>
+
+        <label for="image">Image:</label>
+        <input type="file" id="image" name="image"><br><br>
+
+        <button type="submit">Create Product</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        const form = document.getElementById('productForm');
+        const resultDiv = document.getElementById('result');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            try {
+                // const response = await fetch('http://localhost:8000/api/products/', { with out seriliezer
+                const response = await fetch('http://localhost:8000/products/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    resultDiv.innerHTML = `<p style="color:red;">Error: ${JSON.stringify(data)}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color:red;">Error: ${error}</p>`;
+            }
         });
-    }
-  </script>
+    </script>
 </body>
 </html>

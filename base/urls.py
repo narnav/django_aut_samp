@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from . import views
 from rest_framework_simplejwt.views import TokenObtainPairView #Login
+from .views import ProductCreateAPIView,ProductCreateAPIView
 
 # base 
 urlpatterns = [
@@ -14,5 +15,6 @@ urlpatterns = [
     # path('login',TokenObtainPairView.as_view() ), # routh login
     path('login',views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('register', views.register_user),#Register
-     
+    path('api/products/', ProductCreateAPIView.as_view(), name='product-create'),
+    path('products/', ProductCreateAPIView.as_view(), name='product-create'),
 ]
