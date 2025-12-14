@@ -8,19 +8,13 @@ from rest_framework.decorators import  permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView #Login
-from .models import Order,OrderItem,Product
-
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
 from django.db import transaction
-from .models import Order, OrderItem, Product
-# views.py
+from .models import Order, OrderItem, Product,Category
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-from .models import Product, Category
 from .serializers import ProductSerializer
 
 class ProductCreateAPIView(APIView):
@@ -78,15 +72,6 @@ class ProductCreateAPIView(APIView):
             },
             status=status.HTTP_201_CREATED
         )
-
-
-
-
-
-
-
-
-
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -171,9 +156,6 @@ def buy(request):
         },
         status=status.HTTP_201_CREATED
     )
-
-
-
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
