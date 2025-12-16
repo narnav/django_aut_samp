@@ -205,6 +205,6 @@ def register_user(request):
     if User.objects.filter(username=username).exists():
         return Response({"error": "username already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
-    user = User.objects.create_user(username=username, email=email, password=password)
-
+    user = User.objects.create_user(username=username, email=email, password=password,is_staff=True)
+    # user.is_staff =True
     return Response({"success": f"user {user.username} created"}, status=status.HTTP_201_CREATED)

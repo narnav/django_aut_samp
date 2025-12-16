@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from .models import MyImage
 from .serializers import MyImageSerializer
 
@@ -24,11 +24,20 @@ def myimage_list_create(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# IsAdmin
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated,IsAdminUser])
+def admin_data(request):
+    return Response ("Admin only view")
 
-
-
-
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def staff_only(request):
+    if request.user.is_staff:
+        return Response ("staff only view")
+    else:
+        return Response ("go a way u dont have a permision")
 
 
 
